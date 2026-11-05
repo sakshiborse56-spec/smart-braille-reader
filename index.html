@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Smart Braille Reader — an accessible text-to-Braille simulator." />
+  <title>Smart Braille Reader</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">⠿</div>
+        <div><strong>braille<span>bridge</span></strong><small>SMART BRAILLE READER</small></div>
+      </div>
+      <nav class="nav">
+        <button class="nav-item active" data-view="reader"><span>◫</span> Reader</button>
+        <button class="nav-item" data-view="simulator"><span>⠿</span> Braille simulator</button>
+        <button class="nav-item" data-view="ascii"><span>⌗</span> ASCII Braille</button>
+        <button class="nav-item" data-view="accessibility"><span>◉</span> Accessibility</button>
+        <button class="nav-item" data-view="esp32"><span>⌁</span> ESP32 integration</button>
+        <button class="nav-item" data-view="about"><span>ⓘ</span> About project</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="status-card"><span class="status-dot"></span><div><b>Accessible by design</b><small>Keyboard & screen-reader friendly</small></div></div>
+        <div class="mini-profile"><div class="avatar">SB</div><div><b>Mini Project</b><small>Department of IT</small></div></div>
+      </div>
+    </aside>
+
+    <main id="main" class="main">
+      <header class="topbar">
+        <div class="crumb"><span>Workspace</span><span class="slash">/</span><b id="pageName">Reader</b></div>
+        <div class="top-actions"><span class="live-pill"><i></i> Software prototype</span><button id="themeBtn" class="icon-btn" aria-label="Toggle dark mode" title="Toggle dark mode">◐</button></div>
+      </header>
+
+      <section class="view active" id="view-reader">
+        <div class="welcome-row">
+          <div><p class="eyebrow">YOUR ACCESSIBLE READING SPACE</p><h1>Read without limits<span class="accent">.</span></h1><p class="lead">Turn digital text into Braille patterns and spoken words.</p></div>
+          <div class="welcome-art" aria-hidden="true"><div class="art-ring"></div><div class="art-cell"><span class="raised"></span><span></span><span class="raised"></span><span></span><span></span><span></span></div><div class="art-spark">✦</div></div>
+        </div>
+        <div class="feature-strip">
+          <div><span class="feature-icon purple">⠿</span><b>Braille</b><small>Grade 1 patterns</small></div>
+          <div><span class="feature-icon blue">◖</span><b>Audio</b><small>Listen to text</small></div>
+          <div><span class="feature-icon mint">⌨</span><b>Accessible</b><small>Keyboard-first</small></div>
+        </div>
+
+        <div class="section-heading"><div><p class="eyebrow">TEXT WORKSPACE</p><h2>What would you like to read?</h2></div><span class="step-label">01 / INPUT</span></div>
+        <div class="workspace-card">
+          <div class="card-top"><div class="card-title"><span class="tiny-icon">✎</span><b>Text input</b><span class="tag">Voice · keyboard · paste</span></div><span id="charCount" class="muted">0 characters</span></div>
+          <label class="sr-only" for="textInput">Enter or paste text to convert</label>
+          <textarea id="textInput" rows="5" placeholder="Type, paste, or dictate something here…&#10;&#10;Try: Hello, world!"></textarea>
+          <div class="input-toolbar"><div class="toolbar-left"><button id="micBtn" class="btn btn-soft"><span>🎙</span> <span id="micLabel">Voice input</span></button><button id="pasteBtn" class="btn btn-soft">↧ Paste text</button><button id="clearBtn" class="btn btn-ghost">Clear</button></div><button id="convertBtn" class="btn btn-primary">Convert to Braille <span>→</span></button></div>
+          <p id="micStatus" class="helper" aria-live="polite">Voice input requires microphone permission and browser speech recognition support.</p>
+        </div>
+
+        <div class="section-heading output-heading"><div><p class="eyebrow">YOUR OUTPUT</p><h2>Braille translation</h2></div><span class="step-label">02 / RESULT</span></div>
+        <div class="output-grid">
+          <article class="output-card braille-output"><div class="card-top"><div class="card-title"><span class="tiny-icon purple-text">⠿</span><b>Unicode Braille</b></div><button class="text-btn" id="copyBraille">Copy output ↗</button></div><div id="brailleOutput" class="braille-line" aria-label="Braille output">Your Braille output will appear here.</div><div class="output-foot"><span class="dot-status"></span><span id="brailleStatus">Waiting for text</span></div></article>
+          <article class="output-card audio-output"><div class="card-top"><div class="card-title"><span class="tiny-icon blue-text">◖</span><b>Audio reader</b></div><span class="tag green-tag">Speech synthesis</span></div><p class="audio-description">Listen to your text using your device’s available voice.</p><div class="audio-controls"><button id="speakBtn" class="btn btn-primary">▶ Read aloud</button><button id="pauseBtn" class="btn btn-soft" disabled>Ⅱ Pause</button><button id="stopBtn" class="btn btn-soft" disabled>■ Stop</button></div><div class="audio-bottom"><label for="speechRate">Speech rate</label><input id="speechRate" type="range" min=".6" max="1.5" step=".1" value="1"><span id="rateValue">1×</span></div><p id="speechStatus" class="helper" aria-live="polite">Ready to speak.</p></article>
+        </div>
+        <div class="demo-banner"><div class="demo-icon">✦</div><div><b>Want to try a quick demo?</b><p>Load a sample sentence and see every output in action.</p></div><button id="sampleBtn" class="btn btn-dark">Load sample text →</button></div>
+      </section>
+
+      <section class="view" id="view-simulator">
+        <div class="page-intro"><p class="eyebrow">VISUAL LEARNING TOOL</p><h1>Braille <span class="accent">simulator.</span></h1><p class="lead">Explore the six-dot cell and inspect each character in your converted text.</p></div>
+        <div class="workspace-card"><div class="card-top"><div class="card-title"><b>Character explorer</b></div><span class="tag">6-dot cell</span></div><div class="explorer"><button class="round-btn" id="prevChar" aria-label="Previous character">←</button><div class="explorer-center"><div id="bigCell" class="braille-cell large-cell" aria-label="Selected Braille cell"></div><div id="selectedChar" class="selected-char">A</div><div id="selectedDots" class="muted">Dots 1</div><div id="selectedUnicode" class="unicode-large">⠁</div></div><button class="round-btn" id="nextChar" aria-label="Next character">→</button></div><div class="explorer-footer"><span id="charPosition">Character 1 of 1</span><div class="keyboard-hint">Use ← → keys to explore</div></div></div>
+        <div class="section-heading"><div><p class="eyebrow">ALL CHARACTERS</p><h2>Pattern strip</h2></div></div><div id="patternStrip" class="pattern-strip"></div>
+        <div class="note-card"><b>How to read a Braille cell</b><p>Dots are numbered from top to bottom: 1, 2, 3 in the left column and 4, 5, 6 in the right column. Filled dots represent raised dots.</p></div>
+      </section>
+
+      <section class="view" id="view-ascii">
+        <div class="page-intro"><p class="eyebrow">TEXTUAL DOT MAPPING</p><h1>ASCII <span class="accent">Braille.</span></h1><p class="lead">A plain-text view of raised and empty dots—useful for understanding the pattern logic.</p></div>
+        <div class="workspace-card"><div class="card-top"><div class="card-title"><b>ASCII output</b><span class="tag">* raised · . empty</span></div><button id="copyAscii" class="text-btn">Copy ASCII ↗</button></div><pre id="asciiOutput" class="ascii-output">Your ASCII representation will appear here.</pre><div class="input-toolbar"><span class="helper">Each cell is represented as 3 rows × 2 columns.</span><button id="asciiRefresh" class="btn btn-primary">Refresh output →</button></div></div>
+        <div class="note-card"><b>Note about ASCII</b><p>ASCII symbols are used here to visually represent Braille dot patterns. ASCII itself is not tactile Braille. Unicode Braille is shown alongside the visual simulator.</p></div>
+      </section>
+
+      <section class="view" id="view-accessibility">
+        <div class="page-intro"><p class="eyebrow">MAKE IT YOURS</p><h1>Accessibility <span class="accent">settings.</span></h1><p class="lead">Adjust the reading experience to your preferences.</p></div>
+        <div class="settings-grid">
+          <div class="setting-card"><div><b>High contrast</b><p>Increase contrast between text and background.</p></div><label class="switch"><input type="checkbox" id="contrastToggle"><span></span></label></div>
+          <div class="setting-card"><div><b>Large text</b><p>Make interface text easier to read.</p></div><label class="switch"><input type="checkbox" id="largeToggle"><span></span></label></div>
+          <div class="setting-card"><div><b>Dark mode</b><p>Use a darker interface theme.</p></div><label class="switch"><input type="checkbox" id="darkToggle"><span></span></label></div>
+          <div class="setting-card"><div><b>Speech rate</b><p>Current rate: <span id="settingsRate">1×</span></p><input id="settingsSpeechRate" type="range" min=".6" max="1.5" step=".1" value="1"></div></div>
+        </div>
+        <div class="workspace-card"><h3>Keyboard shortcuts</h3><div class="shortcut-row"><span>Convert text to Braille</span><kbd>Ctrl</kbd> + <kbd>Enter</kbd></div><div class="shortcut-row"><span>Read text aloud</span><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd></div><div class="shortcut-row"><span>Stop speech</span><kbd>Esc</kbd></div><div class="shortcut-row"><span>Explore characters</span><kbd>←</kbd> <kbd>→</kbd></div><p class="helper">Shortcuts may be affected by your browser or screen reader settings.</p></div>
+        <div class="note-card"><b>Screen reader guidance</b><p>Use Tab and Shift+Tab to move through controls. Buttons and input labels are announced using accessible names. For best results, use your device’s screen reader (NVDA, VoiceOver, or TalkBack).</p></div>
+      </section>
+
+      <section class="view" id="view-esp32">
+        <div class="page-intro"><p class="eyebrow">FUTURE HARDWARE EXTENSION</p><h1>ESP32 <span class="accent">integration.</span></h1><p class="lead">A planned pathway from software Braille patterns to a physical tactile display.</p></div>
+        <div class="hardware-card"><div class="hardware-visual"><div class="chip"><span>ESP</span><b>32</b><small>DEV BOARD</small></div><div class="chip-lines"></div></div><div class="hardware-info"><span class="tag amber-tag">Planned · not connected</span><h2>Bring Braille to touch.</h2><p>The next phase can send encoded Braille dot data to an ESP32, which may control a physical six-dot display.</p><button id="sendBraille" class="btn btn-primary">Prepare Braille data →</button><p id="hardwareStatus" class="helper" aria-live="polite">Hardware connection is not implemented in this software prototype.</p></div></div>
+        <div class="workspace-card"><div class="card-top"><b>Data preview for future ESP32</b><span class="tag">JSON</span></div><pre id="espPreview" class="ascii-output">Convert text first to preview the payload.</pre><p class="helper">This preview is data preparation only; it does not transmit to a device.</p></div>
+        <div class="note-card"><b>Proposed communication flow</b><p>Web app → Braille encoding → Bluetooth / Serial → ESP32 → Driver circuit → Physical Braille pins. Hardware testing and safety validation will be required before real-world use.</p></div>
+      </section>
+
+      <section class="view" id="view-about">
+        <div class="page-intro"><p class="eyebrow">THE MINI PROJECT</p><h1>Technology should be <span class="accent">inclusive.</span></h1><p class="lead">A proposed accessible reading companion for blind and visually impaired users.</p></div>
+        <div class="about-hero"><div class="about-mark">⠿</div><div><span class="tag">MINI PROJECT</span><h2>Smart Braille Reader</h2><p>Voice-Based Accessible Text-to-Braille Simulator</p></div></div>
+        <div class="about-grid"><div class="workspace-card"><p class="eyebrow">PROJECT GUIDE</p><h3>Mr. Shivaji Patil</h3><p class="muted">Department of Information Technology</p></div><div class="workspace-card"><p class="eyebrow">PROJECT TEAM</p><h3>Sakshi Borse</h3><p>Charchit Moon · Madura Bhole</p></div></div>
+        <div class="workspace-card"><h3>Problem statement</h3><p>Digital text on phones and websites can be difficult for blind users to access independently. This project proposes a browser-based tool that converts typed or dictated English text into Braille representations and audio, with a future pathway to tactile hardware.</p><h3>Objectives</h3><ul><li>Make text entry possible through keyboard, paste, and speech recognition.</li><li>Convert supported English text into Grade 1 Braille patterns.</li><li>Offer visual six-dot and ASCII learning representations.</li><li>Provide audio reading and keyboard-accessible controls.</li><li>Prepare a future ESP32 hardware integration pathway.</li></ul><h3>Current scope</h3><p>This is a software prototype. The visual simulator and browser audio are implemented; physical Braille hardware and real ESP32 communication are future work.</p></div>
+      </section>
+
+      <footer class="footer"><span>braillebridge · Smart Braille Reader</span><span>Mini Project · Department of IT</span></footer>
+    </main>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="script.js"></script>
+</body>
+</html>
