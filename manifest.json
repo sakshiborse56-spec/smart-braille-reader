@@ -1,0 +1,16 @@
+{
+  "name": "Smart Braille Reader",
+  "short_name": "Braille Reader",
+  "description": "Accessible text-to-Braille and speech reader with explicit shared-text intake.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f7fc",
+  "theme_color": "#6d5ce8",
+  "share_target": {
+    "action": "share/",
+    "method": "POST",
+    "enctype": "application/x-www-form-urlencoded",
+    "params": { "title": "title", "text": "text", "url": "url" }
+  }
+}

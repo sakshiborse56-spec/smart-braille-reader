@@ -6,6 +6,8 @@
   <meta name="description" content="Smart Braille Reader — an accessible text-to-Braille simulator." />
   <title>Smart Braille Reader</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#6d5ce8" />
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to main content</a>
@@ -32,7 +34,7 @@
     <main id="main" class="main">
       <header class="topbar">
         <div class="crumb"><span>Workspace</span><span class="slash">/</span><b id="pageName">Reader</b></div>
-        <div class="top-actions"><span class="live-pill"><i></i> Software prototype</span><button id="themeBtn" class="icon-btn" aria-label="Toggle dark mode" title="Toggle dark mode">◐</button></div>
+        <div class="top-actions"><button id="commandBtn" class="btn btn-soft" type="button" aria-label="Start voice command">🎙 Voice command</button><span class="live-pill"><i></i> Software prototype</span><button id="themeBtn" class="icon-btn" aria-label="Toggle dark mode" title="Toggle dark mode">◐</button></div>
       </header>
 
       <section class="view active" id="view-reader">
@@ -51,14 +53,21 @@
           <div class="card-top"><div class="card-title"><span class="tiny-icon">✎</span><b>Text input</b><span class="tag">Voice · keyboard · paste</span></div><span id="charCount" class="muted">0 characters</span></div>
           <label class="sr-only" for="textInput">Enter or paste text to convert</label>
           <textarea id="textInput" rows="5" placeholder="Type, paste, or dictate something here…&#10;&#10;Try: Hello, world!"></textarea>
-          <div class="input-toolbar"><div class="toolbar-left"><button id="micBtn" class="btn btn-soft"><span>🎙</span> <span id="micLabel">Voice input</span></button><button id="pasteBtn" class="btn btn-soft">↧ Paste text</button><button id="clearBtn" class="btn btn-ghost">Clear</button></div><button id="convertBtn" class="btn btn-primary">Convert to Braille <span>→</span></button></div>
+          <div class="input-toolbar"><div class="toolbar-left"><button id="micBtn" class="btn btn-soft"><span>🎙</span> <span id="micLabel">Dictate text</span></button><button id="pasteBtn" class="btn btn-soft">↧ Paste text</button><button id="clearBtn" class="btn btn-ghost">Clear</button></div><button id="convertBtn" class="btn btn-primary">Convert to Braille <span>→</span></button></div>
           <p id="micStatus" class="helper" aria-live="polite">Voice input requires microphone permission and browser speech recognition support.</p>
+          <div class="note-card" style="margin-top:16px" aria-labelledby="smsShareHeading">
+            <b id="smsShareHeading">Read an SMS with Share</b>
+            <p>On a supported Android browser: install this website as an app, open your SMS, choose Share, then select Smart Braille Reader. The shared message will appear here and be converted automatically. Tap Read aloud to hear it.</p>
+            <p class="helper">This feature receives only the text you explicitly share. It does not access your SMS inbox.</p>
+            <button id="installGuideBtn" class="btn btn-soft" type="button">How to install for SMS sharing</button>
+            <p id="shareStatus" class="helper" aria-live="polite">No shared SMS received yet.</p>
+          </div>
         </div>
 
         <div class="section-heading output-heading"><div><p class="eyebrow">YOUR OUTPUT</p><h2>Braille translation</h2></div><span class="step-label">02 / RESULT</span></div>
         <div class="output-grid">
           <article class="output-card braille-output"><div class="card-top"><div class="card-title"><span class="tiny-icon purple-text">⠿</span><b>Unicode Braille</b></div><button class="text-btn" id="copyBraille">Copy output ↗</button></div><div id="brailleOutput" class="braille-line" aria-label="Braille output">Your Braille output will appear here.</div><div class="output-foot"><span class="dot-status"></span><span id="brailleStatus">Waiting for text</span></div></article>
-          <article class="output-card audio-output"><div class="card-top"><div class="card-title"><span class="tiny-icon blue-text">◖</span><b>Audio reader</b></div><span class="tag green-tag">Speech synthesis</span></div><p class="audio-description">Listen to your text using your device’s available voice.</p><div class="audio-controls"><button id="speakBtn" class="btn btn-primary">▶ Read aloud</button><button id="pauseBtn" class="btn btn-soft" disabled>Ⅱ Pause</button><button id="stopBtn" class="btn btn-soft" disabled>■ Stop</button></div><div class="audio-bottom"><label for="speechRate">Speech rate</label><input id="speechRate" type="range" min=".6" max="1.5" step=".1" value="1"><span id="rateValue">1×</span></div><p id="speechStatus" class="helper" aria-live="polite">Ready to speak.</p></article>
+          <article class="output-card audio-output"><div class="card-top"><div class="card-title"><span class="tiny-icon blue-text">◖</span><b>Audio reader</b></div><span class="tag green-tag">Speech synthesis</span></div><p class="audio-description">Listen to your text using your device’s available voice.</p><div class="audio-controls"><button id="speakBtn" class="btn btn-primary">▶ Read aloud</button><button id="pauseBtn" class="btn btn-soft" disabled>Ⅱ Pause</button><button id="stopBtn" class="btn btn-soft" disabled>■ Stop</button></div><div class="audio-bottom"><label for="speechRate">Speech rate</label><input id="speechRate" type="range" min=".6" max="1.5" step=".1" value="1"><span id="rateValue">1×</span></div><div class="voice-options"><label for="voiceSelect">Voice</label><select id="voiceSelect" aria-label="Choose speech voice"><option value="">System default voice</option></select><label for="speechPitch">Pitch</label><input id="speechPitch" type="range" min=".7" max="1.4" step=".1" value="1"><span id="pitchValue">1.0</span></div><p id="speechStatus" class="helper" aria-live="polite">Ready to speak.</p></article>
         </div>
         <div class="demo-banner"><div class="demo-icon">✦</div><div><b>Want to try a quick demo?</b><p>Load a sample sentence and see every output in action.</p></div><button id="sampleBtn" class="btn btn-dark">Load sample text →</button></div>
       </section>
@@ -82,7 +91,7 @@
           <div class="setting-card"><div><b>High contrast</b><p>Increase contrast between text and background.</p></div><label class="switch"><input type="checkbox" id="contrastToggle"><span></span></label></div>
           <div class="setting-card"><div><b>Large text</b><p>Make interface text easier to read.</p></div><label class="switch"><input type="checkbox" id="largeToggle"><span></span></label></div>
           <div class="setting-card"><div><b>Dark mode</b><p>Use a darker interface theme.</p></div><label class="switch"><input type="checkbox" id="darkToggle"><span></span></label></div>
-          <div class="setting-card"><div><b>Speech rate</b><p>Current rate: <span id="settingsRate">1×</span></p><input id="settingsSpeechRate" type="range" min=".6" max="1.5" step=".1" value="1"></div></div>
+          <div class="setting-card"><div><b>Speech rate</b><p>Current rate: <span id="settingsRate">1×</span></p><input id="settingsSpeechRate" type="range" min=".6" max="1.5" step=".1" value="1"></div></div><div class="setting-card"><div><b>Voice language</b><p>Recognition language</p><select id="recognitionLanguage"><option value="en-IN">English (India)</option><option value="en-US">English (US)</option><option value="hi-IN">Hindi (India)</option><option value="mr-IN">Marathi (India)</option></select></div></div>
         </div>
         <div class="workspace-card"><h3>Keyboard shortcuts</h3><div class="shortcut-row"><span>Convert text to Braille</span><kbd>Ctrl</kbd> + <kbd>Enter</kbd></div><div class="shortcut-row"><span>Read text aloud</span><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd></div><div class="shortcut-row"><span>Stop speech</span><kbd>Esc</kbd></div><div class="shortcut-row"><span>Explore characters</span><kbd>←</kbd> <kbd>→</kbd></div><p class="helper">Shortcuts may be affected by your browser or screen reader settings.</p></div>
         <div class="note-card"><b>Screen reader guidance</b><p>Use Tab and Shift+Tab to move through controls. Buttons and input labels are announced using accessible names. For best results, use your device’s screen reader (NVDA, VoiceOver, or TalkBack).</p></div>
@@ -90,9 +99,9 @@
 
       <section class="view" id="view-esp32">
         <div class="page-intro"><p class="eyebrow">FUTURE HARDWARE EXTENSION</p><h1>ESP32 <span class="accent">integration.</span></h1><p class="lead">A planned pathway from software Braille patterns to a physical tactile display.</p></div>
-        <div class="hardware-card"><div class="hardware-visual"><div class="chip"><span>ESP</span><b>32</b><small>DEV BOARD</small></div><div class="chip-lines"></div></div><div class="hardware-info"><span class="tag amber-tag">Planned · not connected</span><h2>Bring Braille to touch.</h2><p>The next phase can send encoded Braille dot data to an ESP32, which may control a physical six-dot display.</p><button id="sendBraille" class="btn btn-primary">Prepare Braille data →</button><p id="hardwareStatus" class="helper" aria-live="polite">Hardware connection is not implemented in this software prototype.</p></div></div>
-        <div class="workspace-card"><div class="card-top"><b>Data preview for future ESP32</b><span class="tag">JSON</span></div><pre id="espPreview" class="ascii-output">Convert text first to preview the payload.</pre><p class="helper">This preview is data preparation only; it does not transmit to a device.</p></div>
-        <div class="note-card"><b>Proposed communication flow</b><p>Web app → Braille encoding → Bluetooth / Serial → ESP32 → Driver circuit → Physical Braille pins. Hardware testing and safety validation will be required before real-world use.</p></div>
+        <div class="hardware-card"><div class="hardware-visual"><div class="chip"><span>ESP</span><b>32</b><small>BLE BOARD</small></div><div class="chip-lines"></div></div><div class="hardware-info"><span class="tag amber-tag" id="connectionBadge">Bluetooth · not connected</span><h2>Bring Braille to touch.</h2><p>Connect to an ESP32 BLE UART device, then transmit a compact JSON payload containing the text and six-dot patterns.</p><div class="hardware-actions"><button id="connectBluetooth" class="btn btn-primary">Connect ESP32 Bluetooth</button><button id="disconnectBluetooth" class="btn btn-soft" disabled>Disconnect</button><button id="sendBraille" class="btn btn-dark">Send Braille data →</button></div><p id="hardwareStatus" class="helper" aria-live="polite">Bluetooth requires Chrome/Edge on a supported device and an ESP32 running the matching BLE UART firmware.</p></div></div>
+        <div class="workspace-card"><div class="card-top"><b>Data communication payload</b><span class="tag">JSON · UTF-8</span></div><pre id="espPreview" class="ascii-output">Convert text first to preview the payload.</pre><p class="helper">Payload fields: protocol, text, Unicode Braille, and dot arrays. Send is enabled only after a BLE connection.</p><div class="api-panel"><h3>Optional Braille API</h3><p>Use a compatible API endpoint if your team deploys one. Local converter remains the fallback.</p><label for="apiEndpoint">API endpoint URL</label><input id="apiEndpoint" type="url" placeholder="https://your-api.example/translate"><label for="apiKey">API key (optional)</label><input id="apiKey" type="password" autocomplete="off" placeholder="Enter API key only for your own endpoint"><button id="testApi" class="btn btn-soft">Test API / convert →</button><p id="apiStatus" class="helper" aria-live="polite">API is optional; local Braille conversion works offline.</p></div></div>
+        <div class="note-card"><b>Communication flow</b><p>Text input → Braille encoder → JSON packet → Web Bluetooth (BLE GATT) → ESP32 BLE UART service → display controller → six-dot actuator cell. This website sends data; the ESP32 firmware and physical display must be built separately.</p><p><a href="esp32_braille_ble.ino" download>Download sample ESP32 BLE UART firmware</a></p></div>
       </section>
 
       <section class="view" id="view-about">
